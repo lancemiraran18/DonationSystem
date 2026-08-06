@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReliefCare Pro | Barangay Donation System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Authentication Screen -->
+    <div id="auth-container" class="auth-wrapper fade-in">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fa-solid fa-hands-holding-circle logo-icon"></i>
+                <h2>ReliefCare</h2>
+                <p>Barangay Management System</p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active-form">
+                <div class="form-group input-icon">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" id="login-username" required placeholder="Username (e.g., admin)">
+                </div>
+                <div class="form-group input-icon">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="login-password" required placeholder="Password">
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn">
+                    <span class="btn-text">Sign In</span>
+                    <i class="fa-solid fa-circle-notch fa-spin hidden" id="login-spinner"></i>
+                </button>
+                <p class="auth-switch">Don't have an account? <span id="go-to-register">Register</span></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="form-group input-icon">
+                    <i class="fa-regular fa-id-badge"></i>
+                    <input type="text" id="reg-fullname" required placeholder="Full Name">
+                </div>
+                <div class="form-group input-icon">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="reg-email" required placeholder="Email Address">
+                </div>
+                <div class="form-group input-icon">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="reg-password" required placeholder="Create Password">
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+                <p class="auth-switch">Already have an account? <span id="go-to-login">Sign In</span></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application Layout -->
+    <div id="app-container" class="app-wrapper hidden">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-hands-holding-circle"></i>
+                <h2>ReliefCare</h2>
+                <button id="close-sidebar-btn" class="icon-btn mobile-only text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <nav class="nav-links">
+                <button class="nav-btn active" data-target="dashboard-section">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-target="inventory-section">
+                    <i class="fa-solid fa-box-open"></i> Receive Donations
+                </button>
+                <button class="nav-btn" data-target="distribution-section">
+                    <i class="fa-solid fa-truck-fast"></i> Distribute Relief
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn-secondary logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="mobile-toggle" class="icon-btn mobile-only">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="header-search desktop-only">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search system...">
+                    </div>
+                </div>
+                
+                <div class="header-profile">
+                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <div class="avatar">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=2563eb&color=fff" alt="Profile">
+                        <span id="display-user-name" class="desktop-only">Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="content-section active fade-in-up">
+                    <div class="section-header">
+                        <div>
+                            <h1>Overview</h1>
+                            <p>Real-time analytics of barangay relief operations.</p>
+                        </div>
+                        <button class="btn-primary export-btn"><i class="fa-solid fa-download"></i> Export Report</button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-blue"><i class="fa-solid fa-boxes-stacked"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Donations</h3>
+                                <p id="stat-total-donations">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-green"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                            <div class="stat-details">
+                                <h3>Items Distributed</h3>
+                                <p id="stat-total-distributed">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-purple"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-details">
+                                <h3>Beneficiaries Reached</h3>
+                                <p id="stat-beneficiaries">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card recent-activity">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity Feed</h3>
+                            <ul id="activity-list" class="activity-list">
+                                <li class="empty-state">No recent activity yet.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Inventory Section -->
+                <section id="inventory-section" class="content-section hidden fade-in-up">
+                    <div class="section-header">
+                        <div>
+                            <h1>Inventory Management</h1>
+                            <p>Record and manage incoming donations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card form-card">
+                        <h3><i class="fa-solid fa-plus-circle"></i> Add New Donation</h3>
+                        <form id="donation-form" class="inline-form">
+                            <div class="input-wrapper">
+                                <label>Donor Name</label>
+                                <input type="text" id="donor-name" placeholder="E.g., LGU, NGO, John Doe" required>
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Item Name</label>
+                                <input type="text" id="item-name" placeholder="E.g., Canned Goods" required>
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Quantity</label>
+                                <input type="number" id="item-qty" placeholder="0" required min="1">
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Unit</label>
+                                <select id="item-unit" required>
+                                    <option value="">Select Unit</option>
+                                    <option value="Sacks">Sacks</option>
+                                    <option value="Boxes">Boxes</option>
+                                    <option value="Pieces">Pieces</option>
+                                    <option value="Packs">Packs</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary btn-submit"><i class="fa-solid fa-check"></i> Save Item</button>
+                        </form>
+                    </div>
+
+                    <div class="card table-card">
+                        <div class="table-header">
+                            <h3><i class="fa-solid fa-warehouse"></i> Current Stock</h3>
+                            <div class="search-box">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" id="search-inventory" placeholder="Search items...">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Donor</th>
+                                        <th>Item Description</th>
+                                        <th>Stock</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Distribution Section -->
+                <section id="distribution-section" class="content-section hidden fade-in-up">
+                    <div class="section-header">
+                        <div>
+                            <h1>Distribute Relief</h1>
+                            <p>Allocate resources to beneficiaries securely.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card form-card">
+                        <h3><i class="fa-solid fa-people-carry-box"></i> Issue Items</h3>
+                        <form id="distribution-form" class="inline-form">
+                            <div class="input-wrapper">
+                                <label>Beneficiary / Family Head</label>
+                                <input type="text" id="beneficiary-name" placeholder="Full Name" required>
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Select Item</label>
+                                <select id="distribute-item" required>
+                                    <option value="">Choose from inventory...</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            <div class="input-wrapper">
+                                <label>Quantity to Issue</label>
+                                <input type="number" id="distribute-qty" placeholder="0" required min="1">
+                            </div>
+                            <button type="submit" class="btn-primary btn-submit bg-green-btn"><i class="fa-solid fa-handshake"></i> Release</button>
+                        </form>
+                    </div>
+
+                    <div class="card table-card">
+                        <h3><i class="fa-solid fa-clipboard-list"></i> Distribution Logs</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Beneficiary</th>
+                                        <th>Item Received</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="distribution-table-body">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
